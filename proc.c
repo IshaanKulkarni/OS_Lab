@@ -150,6 +150,8 @@ userinit(void)
   // because the assignment might not be atomic.
   acquire(&ptable.lock);
   p->pri = LOW_PRI;
+  p->lop_ticks = 0;
+  p->hip_ticks = 0;
   p->state = RUNNABLE;
 
   release(&ptable.lock);
