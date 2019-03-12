@@ -214,6 +214,8 @@ fork(void)
 
   pid = np->pid;
 
+  np->lop_ticks = 0;
+  np->hip_ticks = 0;
   acquire(&ptable.lock);
   np->pri = LOW_PRI;
   np->state = RUNNABLE;
@@ -337,7 +339,9 @@ scheduler(void)
     acquire(&ptable.lock);
 
     // TODO: Change to priority scheduler starting here
-    //enum procpri search_pri = HIGH_PRI;
+    
+    // commented out to compile; may be useful to you
+    // enum procpri search_pri = HIGH_PRI;
     
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
