@@ -33,6 +33,7 @@ struct context {
 };
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
+enum procpri   { LOW_PRI=1, HIGH_PRI=2 };
 
 // Per-process state
 struct proc {
@@ -49,6 +50,10 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  uint sched_time;             // when we started running
+  uint lop_ticks;              // time spent in low priority
+  uint hip_ticks;              // time spent in high priority
+  enum procpri pri;
 };
 
 // Process memory is laid out contiguously, low addresses first:

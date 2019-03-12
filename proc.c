@@ -7,6 +7,8 @@
 #include "proc.h"
 #include "spinlock.h"
 
+extern int sys_uptime();
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -147,7 +149,7 @@ userinit(void)
   // writes to be visible, and the lock is also needed
   // because the assignment might not be atomic.
   acquire(&ptable.lock);
-
+  p->pri = LOW_PRI;
   p->state = RUNNABLE;
 
   release(&ptable.lock);
@@ -213,7 +215,7 @@ fork(void)
   pid = np->pid;
 
   acquire(&ptable.lock);
-
+  np->pri = LOW_PRI;
   np->state = RUNNABLE;
 
   release(&ptable.lock);
@@ -323,6 +325,7 @@ void
 scheduler(void)
 {
   struct proc *p;
+  uint tdif;
   struct cpu *c = mycpu();
   c->proc = 0;
   
@@ -332,22 +335,57 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+
+    // TODO: Change to priority scheduler starting here
+    //enum procpri search_pri = HIGH_PRI;
+    
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
+
+
+
+
+    // TODO: Changes end here
+    // IMPLICIT release(&ptable.lock) here; 
+    // ptable WILL be different next iteration
+
+
+      
+      // on return
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
+      p->sched_time = sys_uptime();
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
 
       // Process is done running for now.
       // It should have changed its p->state before coming back.
+      tdif = sys_uptime() - p->sched_time;
+      switch (p->pri)
+      {
+          case LOW_PRI:
+          {
+              p->lop_ticks += tdif;
+              break;
+          }
+          case HIGH_PRI:
+          {
+              p->hip_ticks += tdif;
+              break;
+          }
+          default:
+          {
+              panic("priority");
+              break;
+          }
+      }
       c->proc = 0;
     }
     release(&ptable.lock);
