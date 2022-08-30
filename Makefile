@@ -184,6 +184,9 @@ UPROGS=\
 	_helloworld\
 	_lab2cs20b018parentchild\
 	_addition\
+        _subtraction\
+	_multiplication\
+	_lab3cs20b018shell\
 	$(CL_UPROGS)\
 
 fs.img: mkfs README $(UPROGS)
@@ -254,7 +257,7 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
-	printf.c scanf.c umalloc.c helloworld.c lab2cs20b018parentchild.c addition.c\
+	printf.c scanf.c umalloc.c helloworld.c lab2cs20b018parentchild.c addition.c subtraction.c multiplication.c lab3cs20b018shell.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 	$(CL_EXTRA)\

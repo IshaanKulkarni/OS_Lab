@@ -27,9 +27,13 @@ main(void)
       exit();
     }
     if(pid == 0){
-      exec("sh", argv);
+      exec("lab3cs20b018shell", argv);
       printf(1, "init: exec sh failed\n");
       exit();
+    }
+    else{
+	    wait();
+	    exit();
     }
     while((wpid=wait()) >= 0 && wpid != pid)
       printf(1, "zombie!\n");
